@@ -9,12 +9,15 @@ test.group('User', () => {
       name: 'teste',
       email: 'test@test',
       password: 'teste123',
+      avatar: 'https://imagems.com/image',
     }
+
     const { body } = await superTest(baseUrl).post('/users').send(payload).expect(201)
+
     assert.exists(body.user, 'User Undefined')
     assert.exists(body.id, 'Id Undefined')
-    assert.exists(body.name, payload.name)
-    assert.exists(body.email, payload.email)
-    assert.exists(body.password, payload.password)
+    assert.equal(body.name, payload.name)
+    assert.equal(body.email, payload.email)
+    assert.equal(body.password, payload.password)
   }).pin()
 })
