@@ -6,18 +6,18 @@ const baseUrl = `http://${process.env.HOST}:${process.env.PORT}`
 test.group('User', () => {
   test('It should create an user', async ({ assert }) => {
     const payload = {
-      name: 'teste',
-      email: 'test@test',
+      name: 'teste4',
+      email: 'test@test4',
       password: 'teste123',
-      avatar: 'https://imagems.com/image',
     }
 
-    const { body } = await superTest(baseUrl).post('/users').send(payload).expect(201)
+    // const { body } = await superTest(baseUrl).post('/users').send(payload).expect(201)
+    const response = await superTest(baseUrl).post('/users').send(payload)
 
-    assert.exists(body.user, 'User Undefined')
-    assert.exists(body.id, 'Id Undefined')
-    assert.equal(body.name, payload.name)
-    assert.equal(body.email, payload.email)
-    assert.equal(body.password, payload.password)
+    assert.exists(response.body.user, 'User Undefined')
+    assert.exists(response.body.user.id, 'Id Undefined')
+    assert.equal(response.body.user.name, payload.name)
+    assert.equal(response.body.user.email, payload.email)
+    assert.equal(response.body.user.password, payload.password)
   }).pin()
 })
