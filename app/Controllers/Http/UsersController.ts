@@ -3,8 +3,8 @@ import User from 'App/Models/User'
 
 export default class UsersController {
   public async store(ctx: HttpContextContract) {
-    const payload = ctx.request.only(['name', 'email', 'password', 'avatar'])
-    const user = await User.create(payload)
+    const userData = ctx.request.only(['name', 'email', 'password', 'avatar'])
+    const user = await User.create(userData)
 
     return ctx.response.created({ user })
   }
