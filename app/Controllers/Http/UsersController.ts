@@ -6,6 +6,12 @@ export default class UsersController {
     const userData = ctx.request.only(['name', 'email', 'password', 'avatar'])
     const user = await User.create(userData)
 
+    const emailFind = await User.find(user.email)
+
+    if (emailFind) {
+      return ctx.response.status(409)
+    }
+
     return ctx.response.created({ user })
   }
 }
