@@ -28,7 +28,7 @@ test.group('User', (group) => {
       .post('/users')
       .send({ email, name: 'teste', password: 'teste' })
       .expect(409)
-  }).pin()
+  })
 
   group.each.setup(async () => {
     await Database.beginGlobalTransaction()
