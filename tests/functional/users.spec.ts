@@ -7,10 +7,11 @@ const baseUrl = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('User', (group) => {
   test('It should create an user', async ({ assert }) => {
+    const fakerUser = await UserFactory.make()
     const requestData = {
-      name: 'testehash8',
-      email: 'testehash85@teste.com',
-      password: 'teste12344',
+      name: fakerUser.name,
+      email: fakerUser.email,
+      password: fakerUser.password,
     }
 
     const response = await superTest(baseUrl).post('/users').send(requestData).expect(201)
@@ -28,6 +29,9 @@ test.group('User', (group) => {
       .post('/users')
       .send({ email, name: 'teste', password: 'teste' })
       .expect(409)
+    // console.log('response aqui', response.body)
+    // assert.equal(response.body.status, 409)
+    // assert.equal(response.body.message, 'E-mail em uso')
   })
 
   group.each.setup(async () => {
