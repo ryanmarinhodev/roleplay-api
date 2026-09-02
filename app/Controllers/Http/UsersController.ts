@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import EmailAlredyInException from 'App/Exceptions/EmailAlredyInException'
 import User from 'App/Models/User'
 
 export default class UsersController {
@@ -8,7 +9,7 @@ export default class UsersController {
     const emailFind = await User.findBy('email', userData.email)
 
     if (emailFind) {
-      return ctx.response.conflict({ message: 'E-mail em uso' })
+      throw new EmailAlredyInException()
     }
 
     const user = await User.create(userData)
