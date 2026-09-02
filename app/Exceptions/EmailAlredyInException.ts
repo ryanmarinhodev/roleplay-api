@@ -13,13 +13,15 @@
 |
 */
 
-import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { Exception } from '@adonisjs/core/build/standalone'
 
-export default class BadRequestException extends HttpExceptionHandler {
-  public status = 409
+export default class EmailAlredyInException extends Exception {
+  constructor() {
+    super('E-mail em uso', 409)
+  }
 
   public async handle(error: this, ctx: HttpContextContract) {
-    return ctx.response.status(error.status).send({})
+    return ctx.response.status(error.status).send({ message: this.message, status: this.status })
   }
 }
