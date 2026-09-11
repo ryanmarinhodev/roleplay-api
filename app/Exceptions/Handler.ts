@@ -14,10 +14,21 @@
 */
 
 import Logger from '@ioc:Adonis/Core/Logger'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 
 export default class ExceptionHandler extends HttpExceptionHandler {
   constructor() {
     super(Logger)
+  }
+
+  public async handle(error: any, ctx: HttpContextContract) {
+    console.log('error messages:', error.messages)
+
+    if (error.code === 'E_VALIDATION_FAILURE') {
+      return ctx.response.status(error.status).send({ messages: error.messages.errors[0] })
+    }
+
+    return super.handle(error, ctx)
   }
 }
