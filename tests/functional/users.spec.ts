@@ -21,6 +21,9 @@ test.group('User', (group) => {
     assert.equal(response.body.user.name, requestData.name)
     assert.equal(response.body.user.email, requestData.email)
     assert.notExists(response.body.user.password, 'Passaword defined')
+
+    // Chama o handler caso a request seja inválida
+    // assert.exists(response.body.messages, 'Mensagem ausente')
   })
 
   test('should return 409 when user already exists', async ({ assert }) => {
