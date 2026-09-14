@@ -23,8 +23,6 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   }
 
   public async handle(error: any, ctx: HttpContextContract) {
-    console.log('error messages:', error.messages)
-
     if (error.code === 'E_VALIDATION_FAILURE') {
       return ctx.response
         .status(error.status)
