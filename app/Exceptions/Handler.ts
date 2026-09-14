@@ -26,7 +26,9 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     console.log('error messages:', error.messages)
 
     if (error.code === 'E_VALIDATION_FAILURE') {
-      return ctx.response.status(error.status).send({ messages: error.messages.errors[0] })
+      return ctx.response
+        .status(error.status)
+        .send({ messages: 'Dados inválidos', error: error.messages.errors[0] })
     }
 
     return super.handle(error, ctx)
