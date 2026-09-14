@@ -21,20 +21,49 @@ test.group('User', (group) => {
     assert.equal(response.body.user.name, requestData.name)
     assert.equal(response.body.user.email, requestData.email)
     assert.notExists(response.body.user.password, 'Passaword defined')
-
-    // Chama o handler caso a request seja inválida
-    // assert.exists(response.body.messages, 'Mensagem ausente')
   })
 
   test('should return 409 when user already exists', async ({ assert }) => {
-    const { email } = await UserFactory.create()
+    const fakerUser = await UserFactory.make()
     const response = await superTest(baseUrl)
       .post('/users')
-      .send({ email, name: 'teste', password: 'teste' })
+      .send({ name: fakerUser.name, email: 'test2@test.com', password: fakerUser.password })
       .expect(409)
-    // console.log('response aqui', response.body)
-    // assert.equal(response.body.status, 409)
-    // assert.equal(response.body.message, 'E-mail em uso')
+
+    assert.equal(response.body.status, 409)
+  })
+
+  test('should return 422 when invalidate name', async ({ assert }) => {
+    const fakerUser = await UserFactory.make()
+    const response = await superTest(baseUrl)
+      .post('/users')
+      .send({ name: 1, email: fakerUser.email, password: fakerUser.password })
+      .expect(422)
+
+    assert.exists(response.body.error)
+    assert.equal(response.body.messages, response.body.messages)
+  })
+
+  test('should return 422 when invalidate e-mail', async ({ assert }) => {
+    const fakerUser = await UserFactory.make()
+    const response = await superTest(baseUrl)
+      .post('/users')
+      .send({ name: fakerUser.name, email: 'nao-email', password: fakerUser.password })
+      .expect(422)
+
+    assert.exists(response.body.error)
+    assert.equal(response.body.messages, response.body.messages)
+  })
+
+  test('should return 422 when invalidate password', async ({ assert }) => {
+    const fakerUser = await UserFactory.make()
+    const response = await superTest(baseUrl)
+      .post('/users')
+      .send({ name: fakerUser.name, email: fakerUser.email, password: 'oi' })
+      .expect(422)
+
+    assert.exists(response.body.error)
+    assert.equal(response.body.messages, response.body.messages)
   })
 
   group.each.setup(async () => {
