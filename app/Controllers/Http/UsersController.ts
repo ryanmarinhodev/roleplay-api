@@ -24,7 +24,29 @@ export default class UsersController {
     const user = await User.create(userData)
     return ctx.response.created({ user })
   }
-}
 
-// Falta adicionar o handle para 422 caso falhe os dados esperados da request
-// Falta adicionar o handle para quando e-amail e senha forem inválidos
+  public async update(ctx: HttpContextContract) {
+    const userFind = await User.find(ctx.params.id)
+
+    if (!userFind) {
+      return ctx.response.send({ message: 'User não encontrado' })
+    }
+
+    const userSchemaCreate = schema.create({
+      email: schema.string.optional({}, [
+        rules.email(),
+        rules.unique({ table: 'users', column: 'email', whereNot: { id: userFind.id } }),
+      ]),
+      password: schema.string.optional([rules.minLength(4)]),
+      avatar: schema.string.optional(),
+    })
+    const userData = await ctx.request.validate({
+      schema: userSchemaCreate,
+    })
+
+    userFind.merge(userData)
+    await userFind.save()
+
+    return ctx.response.json({ message: 'Dados atualizados' })
+  }
+}
