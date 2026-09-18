@@ -66,6 +66,19 @@ test.group('User', (group) => {
     assert.equal(response.body.messages, response.body.messages)
   })
 
+  test('update user', async ({ assert }) => {
+    const { id, password } = await UserFactory.create()
+    const email = 'testeupdatenew@test.com'
+    const avatar = 'http://ryanmarinhodev.com'
+    const response = await superTest(baseUrl)
+      .put(`/users/${id}`)
+      .send({ email, avatar, password })
+      .expect(422)
+
+    console.log('O que veio do update:', response.body)
+    console.log('Response:', response.text)
+  }).pin()
+
   group.each.setup(async () => {
     await Database.beginGlobalTransaction()
   })
