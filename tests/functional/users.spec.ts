@@ -67,16 +67,20 @@ test.group('User', (group) => {
   })
 
   test('update user', async ({ assert }) => {
-    const { id, password } = await UserFactory.create()
-    const email = 'testeupdatenew@test.com'
+    const fakerUser = await UserFactory.make()
+    const user = await UserFactory.create()
+    const email = fakerUser.email
     const avatar = 'http://ryanmarinhodev.com'
     const response = await superTest(baseUrl)
-      .put(`/users/${id}`)
-      .send({ email, avatar, password })
-      .expect(422)
+      .put(`/users/${user.id}`)
+      .send({ email, avatar })
+      .expect(200)
+
+    await user.refresh()
 
     console.log('O que veio do update:', response.body)
     console.log('Response:', response.text)
+    // adicionar os asserts
   }).pin()
 
   group.each.setup(async () => {
