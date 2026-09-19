@@ -29,7 +29,7 @@ export default class UsersController {
     const userFind = await User.find(ctx.params.id)
 
     if (!userFind) {
-      return ctx.response.send({ message: 'User não encontrado' })
+      return ctx.response.status(404).send({ message: 'User não encontrado' })
     }
 
     const userSchemaCreate = schema.create({
