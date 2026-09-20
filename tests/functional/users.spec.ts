@@ -80,8 +80,8 @@ test.group('User', (group) => {
 
     console.log('O que veio do update:', response.body)
     console.log('Response:', response.text)
-    // adicionar os asserts
-  }).pin()
+    assert.exists(response.body, 'Erro ao atualizar usuário')
+  })
 
   group.each.setup(async () => {
     await Database.beginGlobalTransaction()
