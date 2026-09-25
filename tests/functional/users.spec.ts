@@ -2,6 +2,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import { test } from '@japa/runner'
 import { UserFactory } from 'Database/factories'
 import superTest from 'supertest'
+import Hash from '@ioc:Adonis/Core/Hash'
 
 const baseUrl = `http://${process.env.HOST}:${process.env.PORT}`
 
@@ -80,7 +81,25 @@ test.group('User', (group) => {
 
     console.log('O que veio do update:', response.body)
     console.log('Response:', response.text)
+    assert.exists(response.body.userFind, 'User Undefined')
     assert.exists(response.body, 'Erro ao atualizar usuário')
+  })
+
+  test('update password', async ({ assert }) => {
+    const fakerUser = await UserFactory.make()
+    const user = await UserFactory.create()
+    const email = fakerUser.email
+    const avatar = 'http://ryanmarinhodev.com'
+    const password = 'teste'
+    const response = await superTest(baseUrl)
+      .put(`/users/${user.id}`)
+      .send({ email, avatar, password })
+      .expect(200)
+
+    await user.refresh()
+
+    assert.exists(response.body, 'Erro ao atualizar usuário')
+    assert.isTrue(await Hash.verify(user.password, password))
   })
 
   group.each.setup(async () => {
