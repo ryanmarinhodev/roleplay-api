@@ -47,6 +47,6 @@ export default class UsersController {
     userFind.merge(userData)
     await userFind.save()
 
-    return ctx.response.json({ message: 'Dados atualizados' })
+    return ctx.response.json({ message: 'Dados atualizados', userFind })
   }
 }
