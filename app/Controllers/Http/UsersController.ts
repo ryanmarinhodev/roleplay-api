@@ -38,7 +38,7 @@ export default class UsersController {
         rules.unique({ table: 'users', column: 'email', whereNot: { id: userFind.id } }),
       ]),
       password: schema.string.optional([rules.minLength(4)]),
-      avatar: schema.string.optional(),
+      avatar: schema.string.optional([rules.url()]),
     })
     const userData = await ctx.request.validate({
       schema: userSchemaCreate,
