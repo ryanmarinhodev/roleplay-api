@@ -3,16 +3,16 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class ForgotController {
   public async forgot(ctx: HttpContextContract) {
-    const { email } = ctx.request.only(['email'])
+    const { email, name } = ctx.request.only(['email', 'name'])
 
-    const responseForgotPassword = await Mail.send((message) => {
+    await Mail.send((message) => {
       message
-        .from('no-reply@roleplay.com')
-        .to(email)
+        .from('no-reply@roleplay.com', name)
+        .to(email, name)
         .subject('Roleplay, recuperação de senha')
         .text('Clique no link abaixo para redefinir sua senha')
     })
-    console.log('O que veio do controller', responseForgotPassword)
+
     return ctx.response.status(204).noContent()
   }
 }
