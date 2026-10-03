@@ -14,7 +14,7 @@ test.group('User', (group) => {
       assert.deepEqual(message.to, [{ address: user.email, name: user.name }])
       assert.deepEqual(message.from, { address: 'no-reply@roleplay.com', name: user.name })
       assert.equal(message.text, 'Clique no link abaixo para redefinir sua senha')
-      assert.equal(message.subject, 'Roleplay, recuperação de senha')
+      assert.include(message.html!, user.name)
     })
 
     await superTest(baseUrl)
