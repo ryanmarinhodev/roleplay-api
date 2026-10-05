@@ -23,7 +23,20 @@ test.group('User', (group) => {
       .expect(204)
 
     Mail.restore()
-  }).pin()
+  })
+
+  test('It should create token', async ({ assert }) => {
+    const user = await UserFactory.create()
+
+    await superTest(baseUrl)
+      .post('/forgot-password')
+      .send({ email: user.email, resetPasswordUrl: 'url', name: user.name })
+      .expect(204)
+
+    const token = await user.related('tokens').query()
+    console.log('Token aqui:', token)
+    assert.isNotEmpty(token)
+  })
 
   group.each.setup(async () => {
     await Database.beginGlobalTransaction()

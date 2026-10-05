@@ -1,6 +1,8 @@
 import Mail from '@ioc:Adonis/Addons/Mail'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
+import { randomBytes } from 'crypto'
+import { promisify } from 'util'
 
 export default class ForgotController {
   public async forgot(ctx: HttpContextContract) {
@@ -12,8 +14,13 @@ export default class ForgotController {
 
     const user = await User.findByOrFail('email', email)
 
+    const ramdon = await promisify(randomBytes)(24)
+    const token = ramdon.toString('hex')
+    await user.related('tokens').updateOrCreate({ userId: user.id }, { token })
+    const resetPathUrlWithToken = `${resetPasswordUrl}?token=${token}`
+
     try {
-      const responseData = await Mail.send((message) => {
+      await Mail.send((message) => {
         message
           .from('no-reply@roleplay.com', name)
           .to(email, name)
@@ -22,10 +29,9 @@ export default class ForgotController {
           .htmlView('email/forgotpassword.edge', {
             productName: 'Roleplay',
             name: user.name,
-            resetPasswordUrl,
+            resetPasswordUrl: resetPathUrlWithToken,
           })
       })
-      console.log('responseData: ', responseData)
     } catch (error) {
       console.error(error)
     }
