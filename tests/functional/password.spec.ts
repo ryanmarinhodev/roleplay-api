@@ -25,6 +25,15 @@ test.group('User', (group) => {
     Mail.restore()
   })
 
+  test('It should return 422 when required data is not provided or data is invalid', async ({
+    assert,
+  }) => {
+    const response = await superTest(baseUrl).post('/forgot-password').send({}).expect(422)
+
+    console.log('Resposta: ', response.body)
+    assert.exists(response.body)
+  })
+
   test('It should create token', async ({ assert }) => {
     const user = await UserFactory.create()
 
