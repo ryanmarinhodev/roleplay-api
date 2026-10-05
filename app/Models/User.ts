@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, beforeSave, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Hash from '@ioc:Adonis/Core/Hash'
+import LinkToken from './LinkToken'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -23,6 +24,11 @@ export default class User extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @hasMany(() => LinkToken, {
+    foreignKey: 'userId',
+  })
+  public tokens: hasMany<typeof LinkToken>
 
   @beforeSave()
   public static async hashPassword(user: User) {
